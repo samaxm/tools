@@ -18,7 +18,7 @@ public class HttpRequestUtil {
 	public static int SUCCESS=200;
 	
 	public enum Method{
-		GET,POST;
+		GET,POST,PUT;
 	}
 	
 	public static Response GET(String url,HttpHeader... headers) throws IOException{
@@ -33,7 +33,7 @@ public class HttpRequestUtil {
 	}
 	
 	
-	public static Response JSON(String url,String json,HttpHeader... headers) throws IOException{
+	public static Response JSON(String url,String json,Method method,HttpHeader... headers) throws IOException{
 		Builder builder=new Request.Builder();
 		RequestBody body=RequestBody.create(MediaType.parse("JSON"),json);
 		builder.url(url);
@@ -42,7 +42,11 @@ public class HttpRequestUtil {
 				builder.addHeader(header.getName(), header.getValue());
 			}
 		}
-		builder.post(body);
+		if(method==Method.POST){
+			builder.post(body);
+		}else{
+			builder.put(body);
+		}
 		return client.newCall(builder.build()).execute();
 	}
 }
