@@ -1,12 +1,15 @@
 package online.decentworld.tools;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 public class MD5 {
 	
-	
+	private static Logger logger= LoggerFactory.getLogger(MD5.class);
 	private static Random random = new Random();     
 
     // 全局数组
@@ -74,9 +77,12 @@ public class MD5 {
     }
     public static String GetMD5Code(String str) {
         try {
+            logger.debug("[pre_md5]#"+str);
             MessageDigest md = MessageDigest.getInstance("MD5");
             // md.digest() 该函数返回值为存放哈希值结果的byte数组
-            return byteToString(md.digest(str.getBytes()));
+            String md5= byteToString(md.digest(str.getBytes()));
+            logger.debug("[after_md5]#"+md5);
+            return md5;
         } catch (NoSuchAlgorithmException ex) {
         	System.out.println("MD5加密错误");
             ex.printStackTrace();
