@@ -7,7 +7,11 @@ import java.util.List;
 
 /**
  * Created by Sammax on 2016/10/19.
- */
+ *
+ * add / set operation won't change order immediately
+ * get* method will sort list first
+ *
+ * */
 public class SortedList<T> {
 
     private HashMap<String,SortedElement<T>> table=new HashMap<>();
@@ -27,50 +31,63 @@ public class SortedList<T> {
             queue.remove(e);
             queue.add(e);
         }
-        sort();
+    }
+
+    public void setRank(String key,long score){
+        SortedElement element=table.get(key);
+        if(element!=null){
+            element.setScore(score);
+        }else{
+            throw new IllegalArgumentException("key don't exist");
+        }
     }
 
     public void addTimelineElement(String key,T t){
         addElement(System.currentTimeMillis(),key,t);
     }
 
-    public void removeByKey(String key){
-        table.remove(key);
+    public T removeByKey(String key){
+        SortedElement<T> element=table.remove(key);
         queue.remove(SortedElement.KeyExample(key));
+        return element.getValue();
     }
 
-    public SortedElement<T> getByKey(String key){
-        return table.get(key);
+    public T getByKey(String key){
+        return table.get(key).getValue();
     }
 
 
-    public SortedElement<T> getByIndex(int index){
-        return queue.get(index);
+    public T getByIndex(int index){
+        sort();
+        index=getIndex(index);
+        return queue.get(index).getValue();
     }
 
-    public List<SortedElement<T>> getRangeByIndex(int start,int end){
+    public List<T> getRangeByIndex(int start,int end){
+        sort();
         Range range=getRange(start,end);
         if(range.getStart()>queue.size()-1){
             return Collections.EMPTY_LIST;
         }else{
-            List<SortedElement<T>> list=new LinkedList<>();
+            List<T> list=new LinkedList<>();
             for(int i= (int) range.getStart();i<range.getEnd();i++){
-                list.add(queue.get(i).clone());
+                list.add(queue.get(i).getValue());
             }
             return list;
         }
     }
 
-    public List<SortedElement<T>> getRangeByRank(long start,long end){
+    public List<T> getRangeByRank(long start,long end){
+        sort();
         long min=queue.get(0).getScore();
         long max=queue.get(queue.size()-1).getScore();
         if(start>max||end<min){
             return Collections.EMPTY_LIST;
         }else{
-            List<SortedElement<T>> list=new LinkedList<>();
+            List<T> list=new LinkedList<>();
            queue.forEach((SortedElement<T> e)->{
                    if(e.getScore()<end&&e.getScore()>=start){
-                       list.add(e.clone());
+                       list.add(e.getValue());
                    }
            });
             return list;
@@ -78,39 +95,43 @@ public class SortedList<T> {
     }
 
 
-    public void removeByRank(long start,long end){
-        long min=queue.get(0).getScore();
+    public List<T> removeByRank(long start,long end){
+       long min=queue.get(0).getScore();
         long max=queue.get(queue.size()).getScore();
         if(start>max||end<min){
-            return;
+            return Collections.EMPTY_LIST;
         }else{
-            List<SortedElement<T>> list=new LinkedList<>();
+            List<T> list=new LinkedList<>();
             queue.forEach((SortedElement<T> e)->{
                 if(e.getScore()<end&&e.getScore()>=start){
                     table.remove(e.getKey());
                     queue.remove(e);
-
+                    list.add(e.getValue());
                 }
             });
+            return list;
         }
     }
 
-    public void removeByIndex(int start,int end){
+    public List<T> removeByIndex(int start,int end){
+        sort();
         Range range=getRange(start, end);
         if(range.getStart()>queue.size()-1){
-            return;
+            return Collections.EMPTY_LIST;
         }else{
-            List<SortedElement<T>> list=new LinkedList<>();
+            List<T> list=new LinkedList<>();
             for(int i= (int) range.getStart();i<range.getEnd();i++){
                 table.remove(queue.get(i).getKey());
-                queue.remove(i);
+                SortedElement<T> element=queue.remove(i);
+                list.add(element.getValue());
             }
+            return list;
         }
     }
 
 
 
-    private Range getRange(long start,long end){
+    private Range getRange(int start,int end){
         start=getIndex(start);
         end=getIndex(end);
         if(start<end){
@@ -120,7 +141,7 @@ public class SortedList<T> {
         }
     }
 
-    private long getIndex(long num){
+    private int getIndex(int num){
         if(num<0){
             num=queue.size()-Math.abs(num);
             if(num<0){
@@ -217,16 +238,6 @@ public class SortedList<T> {
 
 
     public static void main(String[] args) {
-        SortedList<String> list=new SortedList<>();
-        list.addElement(4,"123","a");
-        list.addElement(5,"123","b");
-        list.addElement(1,"456","c");
-        list.addElement(3,"789","d");
-        list.addElement(6,"012","e");
-        list.removeByKey("123");
-        List<SortedElement<String>> list2=list.getRangeByIndex(0, -2);
-        List<SortedElement<String>> list3=list.getRangeByRank(-2,4);
-        System.out.println(1);
 
     }
 }

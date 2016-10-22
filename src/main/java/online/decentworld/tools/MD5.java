@@ -3,6 +3,7 @@ package online.decentworld.tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
@@ -80,12 +81,16 @@ public class MD5 {
             logger.debug("[pre_md5]#"+str);
             MessageDigest md = MessageDigest.getInstance("MD5");
             // md.digest() 该函数返回值为存放哈希值结果的byte数组
-            String md5= byteToString(md.digest(str.getBytes()));
+            String md5= null;
+            try {
+                md5 = byteToString(md.digest(str.getBytes("utf-8")));
+            } catch (UnsupportedEncodingException e) {
+                logger.warn("",e);
+            }
             logger.debug("[after_md5]#"+md5);
             return md5;
         } catch (NoSuchAlgorithmException ex) {
-        	System.out.println("MD5加密错误");
-            ex.printStackTrace();
+            logger.warn("",ex);
             return null;
         }
     }
