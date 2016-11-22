@@ -95,6 +95,26 @@ public class MD5 {
         }
     }
 
+    public static byte[] getMD5(String str) {
+        try {
+            logger.debug("[pre_md5]#"+str);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            // md.digest() 该函数返回值为存放哈希值结果的byte数组
+            byte[] md5= null;
+            try {
+                md5 = md.digest(str.getBytes("utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                logger.warn("",e);
+            }
+            logger.debug("[after_md5]#"+md5);
+            return md5;
+        } catch (NoSuchAlgorithmException ex) {
+            logger.warn("",ex);
+            return null;
+        }
+    }
+
+
     public static String GetMD5Code(byte[] data) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");

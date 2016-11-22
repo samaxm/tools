@@ -1,18 +1,15 @@
 package online.decentworld.tools;
 
-import javax.crypto.BadPaddingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 public class AES {
   
     static final String algorithmStr = "AES/ECB/PKCS5Padding";
-
+    private static Logger logger= LoggerFactory.getLogger(LoggerIdentifier.class);
   
     static boolean isInited = false;
         
@@ -25,18 +22,8 @@ public class AES {
             cipher.init(Cipher.ENCRYPT_MODE, key);//   ʼ  
             byte[] result = cipher.doFinal(byteContent);
             return result; //     
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.warn("content#"+content+"password#"+password,e);
         }
         return null;
     }
@@ -49,16 +36,8 @@ public class AES {
             cipher.init(Cipher.DECRYPT_MODE, key);//   ʼ  
             byte[] result = cipher.doFinal(content);
             return result; //     
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.warn("content#"+content+"password#"+password,e);
         }
         return null;
     }
