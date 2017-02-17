@@ -6,6 +6,9 @@ import java.util.Date;
 
 public class DateFormater {
 	private static SimpleDateFormat formater=new SimpleDateFormat("yyMMddHHmmss");
+
+
+	private static SimpleDateFormat date_formater=new SimpleDateFormat("yyyy/MM/dd");
 	private static SimpleDateFormat wxformater=new SimpleDateFormat("yyyyMMddHHmmss");
 	private static SimpleDateFormat readable_formater=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -25,6 +28,13 @@ public class DateFormater {
 	public static String formatReadableString(Date date){
 		return readable_formater.format(date);
 	}
-	
+
+	public static Long getDateNum(String date) throws ParseException {
+		return date_formater.parse(date).getTime();
+	}
+
+	public static void main(String[] args) throws ParseException {
+		getDateNum("1234/16/23");
+	}
 	
 }

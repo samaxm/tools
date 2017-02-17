@@ -1,25 +1,18 @@
 package online.decentworld.tools;
 
+import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * 
- * @ClassName: IDUitl.java
- * @Description: appID唯一
- * @author: wangxingchaoDW
- * @date: 2015年7月18日 下午2:01:11
- */
 
 public class IDUtil {
 
-	/**
-	 * @Description: 获取UUID里面的数字，截取前六位
-	 * @author: wangxingchaoDW
-	 * @date: 2015年7月18日 下午2:02:18
-	 * @return
-	 */
+	private static String stringBase = "1234567890qwertyuiopasdfghjklzxcvbnmABCDEFGHIJKLMNPQRSTUVWXYZ";
+	private static String stringBaseUP = "1234567890ABCDEFGHIJKLMNPQRSTUVWXYZ";
+
+
+
 	public static String getDWID() {
 		UUID uniqueKey = UUID.randomUUID();
 		String str = uniqueKey.toString().replace("-", "");
@@ -29,17 +22,17 @@ public class IDUtil {
 		return fs;
 	}
 
+	public static String getRandomString(int len){
+		StringBuilder sb=new StringBuilder();
+		Random random=new Random();
+		for(int i=0;i<len;i++) {
+			int index = random.nextInt(stringBaseUP.length() - 1);
+			sb.append(stringBaseUP.charAt(index));
+		}
+		return sb.toString();
+	}
 
-
-	/**
-	 * 
-	 * @Description: 创建指定长度为6的随机字符串 
-	 * @author: wangxingchaoDW
-	 * @date: 2015年7月20日 下午2:15:35
-
-	 * @return
-	 */
-	public  static String createRandomCode(){  
+	public  static String createRandomCode(){
 		String retStr = "";  
 		String strTable = "1234567890";  
 		int len = strTable.length();  
@@ -64,13 +57,7 @@ public class IDUtil {
 		return retStr;  
 	}  
 	
-	/**
-	 * 生成环信的id长度为6数字加字母
-	 * @Description: 
-	 * @author: wangxingchaoDW
-	 * @date: 2015年7月23日 下午3:27:45
-	 * @return
-	 */
+
 	public static String randomToken(){
 		String retStr = "";  
 		String strTable = "1234567890ABCDEFGHIJKLMNPQRSTUVWXYZ";  
@@ -97,6 +84,8 @@ public class IDUtil {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(randomToken());
+		for (int i=0;i<100;i++) {
+			System.out.println(getRandomString(4));
+		}
 	}
 }
